@@ -1,0 +1,49 @@
+version: '3.3'
+services:
+  products_microservice:
+    container_name: products_microservice
+    hostname: products_microservice
+    build:
+      context: .
+      dockerfile: devops/Dockerfile
+    volumes:
+      - "./:/usr/src/app"
+    environment:
+      NODE_ENV: development
+      PORT: 4000
+      POSTGRES_HOST: products_microservice_db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+      RABBITMQ_USER: admin
+      RABBITMQ_PASSWORD: admin
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_QUEUE_NAME: product
+      PRODUCT_MICROSERVICE_TOKEN: XJS87^M5MGfJ
+    command: npm run start:dev
+    ports:
+      - "4000:4000"
+    expose:
+      - 4000
+    networks:
+      - default_network
+  products_microservice_db:
+    container_name: products_microservice_db
+    hostname: products_microservice_db
+    image: postgres:latest
+    restart: always
+    ports:
+    - "5432:5432"
+    volumes:
+    - /data/postgres:/data/postgres
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+    networks:
+      - default_network
+networks:
+  default_network:
+    name: default_network
